@@ -1,0 +1,17 @@
+// A grammar for the Ren'py language
+
+// The 'start' rule is where the parser begins. It expects one or more statements.
+start: statement+
+
+// A statement can be a label_statement (for now).
+statement: label_statement
+
+// A label_statement consists of the keyword "label", an IDENTIFIER, and a colon.
+label_statement: "label" IDENTIFIER ":"
+
+// Import common terminals from Lark's library.
+// IDENTIFIER is a C-style identifier (e.g., "start", "my_label").
+%import common.CNAME -> IDENTIFIER
+// Ignore whitespace (spaces, tabs, newlines) between tokens.
+%import common.WS
+%ignore WS
