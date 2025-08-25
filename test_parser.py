@@ -1,7 +1,8 @@
 import sys
-from lark import Lark, Transformer, Indenter
+# --- THIS IS THE LINE TO CHANGE ---
+from lark import Lark, Transformer
+from lark.indenter import Indenter # Import directly from the sub-module
 
-# --- New Indenter Class ---
 # This class tells Lark how to handle indentation.
 # It will be passed to the Lark parser.
 class RenpyIndenter(Indenter):
@@ -25,7 +26,7 @@ def main():
             rel_to=__file__,
             parser='lalr',
             start='start',
-            postlex=RenpyIndenter() # <--- THIS IS THE NEW LINE
+            postlex=RenpyIndenter()
         )
         print("Grammar loaded successfully.")
 
