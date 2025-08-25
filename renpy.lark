@@ -1,17 +1,33 @@
 // A grammar for the Ren'py language
 
-// The 'start' rule is where the parser begins. It expects one or more statements.
 start: statement+
 
-// A statement can be a label_statement (for now).
-statement: label_statement
+// A statement can now be a label_statement or a dialogue_statement.
+statement: label_statement | dialogue_statement
 
-// A label_statement consists of the keyword "label", an IDENTIFIER, and a colon.
-label_statement: "label" IDENTIFIER ":"
+// A label_statement is now followed by a block of indented statements.
+label_statement: "label" IDENTIFIER ":" block
+
+// A block is an indented section of one or more statements.
+block: _INDENT statement+ _DEDENT
+
+// A dialogue statement is an identifier (like 'e') followed by a string.
+dialogue_statement: IDENTIFIER STRING
+
+// --- Terminals and Imports ---
 
 // Import common terminals from Lark's library.
-// IDENTIFIER is a C-style identifier (e.g., "start", "my_label").
 %import common.CNAME -> IDENTIFIER
-// Ignore whitespace (spaces, tabs, newlines) between tokens.
-%import common.WS
-%ignore WS
+%import common.ESCAPED_STRING -> STRING
+%import common.WS_INLINE
+
+// We now handle whitespace manually to properly track indentation.
+%ignore WS_INLINE
+
+// Import special tokens for handling indentation.
+// Lark's LALR(1) algorithm requires these to be declared.
+%declare _INDENT _DEDENT
+
+// Handle newlines. We need this to calculate indentation.
+%import common.NEWLINE
+%ignore NEWLINE
